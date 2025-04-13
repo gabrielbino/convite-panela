@@ -86,7 +86,7 @@ export default function App() {
             <button
               className="bg-gray-700 text-white p-2 rounded"
               onClick={() => {
-                if (adminPassword === "123456") { // você pode trocar por outra senha
+                if (adminPassword === "123456") { 
                   setIsAdmin(true);
                 } else {
                   alert("Senha incorreta");
