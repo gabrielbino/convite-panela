@@ -4,13 +4,13 @@ import { db } from '../services/firebaseService.ts';
 
 interface GuestEntry {
   name: string;
-  email: string;
   confirmed: boolean;
   gift?: string;
 }
 
 export default function AdminPanel() {
   const [guests, setGuests] = useState<GuestEntry[]>([]);
+  console.log(guests)
 
   useEffect(() => {
     const q = query(collection(db, 'guests'), orderBy('timestamp', 'desc'));
@@ -35,9 +35,9 @@ export default function AdminPanel() {
           <p className="text-gray-600">Nenhuma confirmação ainda.</p>
         ) : (
           <ul className="list-disc pl-6 text-gray-700 text-sm space-y-1">
-            {confirmedGuests.map((g, i) => (
-              <li key={i}>
-                {g.name} — {g.email}
+            {confirmedGuests.map((g) => (
+              <li>
+                {g.name} 
               </li>
             ))}
           </ul>
@@ -52,7 +52,7 @@ export default function AdminPanel() {
           <ul className="list-disc pl-6 text-gray-700 text-sm space-y-1">
             {giftedGuests.map((g, i) => (
               <li key={i}>
-                {g.name} — {g.email} — {g.gift}
+                {g.name} - {g.gift}
               </li>
             ))}
           </ul>

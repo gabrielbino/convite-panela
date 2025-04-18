@@ -1,6 +1,5 @@
 export interface Guest {
   name: string;
-  email: string;
 }
 
 export interface Gift {
@@ -8,5 +7,4 @@ export interface Gift {
   name: string;
   taken: boolean;
   chosenBy?: string;
-  email?: string;
 }

@@ -16,7 +16,7 @@ const calculateTimeLeft = (targetDate: Date): TimeLeft => {
       days: Math.floor(difference / (1000 * 60 * 60 * 24)),
       hours: Math.floor((difference / (1000 * 60 * 60)) % 24),
       minutes: Math.floor((difference / 1000 / 60) % 60),
-      seconds: Math.floor((difference / 1000) % 60)
+      seconds: Math.floor((difference / 1000) % 60),
     };
   }
 
@@ -35,27 +35,29 @@ export default function Countdown() {
   }, [targetDate]);
 
   return (
-    <div className="mt-6 text-center text-gray-700">
-      <p className="text-sm">Faltam</p>
-      <div className="flex justify-center gap-4 text-2xl font-bold">
-        <div className="flex flex-col items-center">
-          <span className="animate-pulse">{timeLeft.days}</span>
-          <span className="text-xs font-normal text-gray-500">dias</span>
+    <div className="mt-6 text-center">
+      <p className="text-sm text-[#9CB983]">Faltam</p>
+
+      <div className="flex justify-center gap-6 text-2xl font-bold text-[#6CBD46]">
+        <div className="flex flex-col items-center animate-pulse">
+          <span>{timeLeft.days}</span>
+          <span className="text-xs font-medium text-[#9CB983]">dias</span>
         </div>
-        <div className="flex flex-col items-center">
-          <span className="animate-pulse">{timeLeft.hours}</span>
-          <span className="text-xs font-normal text-gray-500">horas</span>
+        <div className="flex flex-col items-center animate-pulse">
+          <span>{timeLeft.hours}</span>
+          <span className="text-xs font-medium text-[#9CB983]">horas</span>
         </div>
-        <div className="flex flex-col items-center">
-          <span className="animate-pulse">{timeLeft.minutes}</span>
-          <span className="text-xs font-normal text-gray-500">min</span>
+        <div className="flex flex-col items-center animate-pulse">
+          <span>{timeLeft.minutes}</span>
+          <span className="text-xs font-medium text-[#9CB983]">min</span>
         </div>
-        <div className="flex flex-col items-center">
-          <span className="animate-pulse">{timeLeft.seconds}</span>
-          <span className="text-xs font-normal text-gray-500">seg</span>
+        <div className="flex flex-col items-center animate-pulse">
+          <span>{timeLeft.seconds}</span>
+          <span className="text-xs font-medium text-[#9CB983]">seg</span>
         </div>
       </div>
-      <p className="text-sm mt-2">para o grande dia!</p>
+
+      <p className="text-sm mt-2 text-[#9CB983]">para o grande dia!</p>
     </div>
   );
 }

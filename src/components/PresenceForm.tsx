@@ -1,53 +1,43 @@
 import React, { useState } from 'react';
 import { saveGuest } from '../services/firebaseGuestsService.ts';
-import { sendGuestEmail } from '../services/emailService.ts';
 
 interface PresenceFormProps {
-  onSubmit: (name: string, email: string) => void;
+  onSubmit: (name: string) => void;
 }
 
 export default function PresenceForm({ onSubmit }: PresenceFormProps) {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !email.trim()) {
-      alert("Por favor, preencha nome e e-mail.");
+    if (!name.trim()) {
+      alert('Por favor, preencha nome.');
       return;
     }
 
-    await saveGuest(name, email, true);
-    await sendGuestEmail(name, email, true); // presença confirmada, sem presente
-
-    onSubmit(name, email);
-
+    await saveGuest(name, true); // apenas presença
+    onSubmit(name);
     setName('');
-    setEmail('');
-    alert("Presença confirmada com sucesso!");
+    alert('Presença confirmada com sucesso!');
   };
 
   return (
-    <section className='mt-10'>
-      <h2 className="text-2xl font-semibold mb-4">Lista de Presença</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <section className="mt-12 text-center">
+      <h2 className="text-2xl font-semibold mb-4 text-[#354B25]">Confirme sua presença</h2>
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row justify-center items-center gap-4">
         <input
           type="text"
-          placeholder="Seu nome"
+          placeholder="Seu nome completo (obrigatório)"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="border p-2 rounded w-full"
+          className="border border-[#9CB983] px-4 py-2 rounded w-full sm:w-64 text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#6CBD46]"
         />
-        <input
-          type="email"
-          placeholder="Seu e-mail"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="border p-2 rounded w-full"
-        />
-        <button type="submit" className="bg-green-500 text-white px-4 py-2 rounded">
-          Confirmar Presença
+        <button
+          type="submit"
+          className="bg-[#426221] hover:bg-[#6CBD46] text-white font-semibold px-6 py-2 rounded transition"
+        >
+          Confirmar
         </button>
       </form>
     </section>

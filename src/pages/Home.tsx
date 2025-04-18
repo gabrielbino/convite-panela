@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../components/Header.tsx';
 import PresenceForm from '../components/PresenceForm.tsx';
 import GiftList from '../components/GiftList.tsx';
 import PixSection from '../components/PixSection.tsx';
 import { Guest, Gift } from '../types';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { db } from '../services/firebaseService.ts';
 
 interface HomeProps {
   guests: Guest[];
@@ -19,6 +21,25 @@ export default function Home({ guests, setGuests, gifts, setGifts }: HomeProps) 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [password, setPassword] = useState('');
 
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, 'guests'), (snapshot) => {
+      const updatedTaken = snapshot.docs
+        .map(doc => doc.data())
+        .map(data => data.gift)
+        .filter(gift => typeof gift === 'string');
+  
+      const updated = gifts.map(gift => ({
+        ...gift,
+        taken: updatedTaken.includes(gift.name),
+        chosenBy: updatedTaken.includes(gift.name) ? gift.chosenBy : undefined,
+      }));
+  
+      setGifts(updated);
+    });
+  
+    return () => unsubscribe();
+  }, [gifts, setGifts]);
+
   const handleAdminAccess = () => {
     if (password === process.env.REACT_APP_ADMIN_PASSWORD) {
       navigate('/admin');
@@ -26,43 +47,20 @@ export default function Home({ guests, setGuests, gifts, setGifts }: HomeProps) 
       alert('Senha incorreta');
     }
   };
-
+  
   return (
     <div>
-      <div className="flex justify-end p-4">
-        {!isPasswordVisible ? (
-          <button
-            className="text-sm text-blue-600 underline"
-            onClick={() => setIsPasswordVisible(true)}
-          >
-            Entrar como admin
-          </button>
-        ) : (
-          <div className="flex gap-2 items-center">
-            <input
-              type="password"
-              placeholder="Senha"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="border p-1 rounded text-sm"
-            />
-            <button
-              onClick={handleAdminAccess}
-              className="bg-blue-600 text-white px-2 py-1 rounded text-sm"
-            >
-              Entrar
-            </button>
-          </div>
-        )}
-      </div>
-
       <Header
         bride="Kristielly"
         groom="Daniel"
         date="2025-06-07"
         location="Chácara Timoneiro, Serra"
+        onAdminClick={handleAdminAccess}
+        isPasswordVisible={isPasswordVisible}
+        password={password}
+        setPassword={setPassword}
       />
-      
+
       <PixSection pixKey="27992342095" />
 
       <div className="max-w-2xl mx-auto p-4">
@@ -72,13 +70,12 @@ export default function Home({ guests, setGuests, gifts, setGifts }: HomeProps) 
           setGifts={setGifts}
           isAdmin={false}
         />
-        
-        <PresenceForm onSubmit={(name, email) => {
-          const newGuest = { name, email };
+
+        <PresenceForm onSubmit={(name) => {
+          const newGuest = { name };
           setGuests([...guests, newGuest]);
           setGuest(newGuest);
-          }} 
-        />
+        }} />
       </div>
     </div>
   );
