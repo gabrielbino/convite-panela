@@ -51,10 +51,10 @@ export default function Home({ guests, setGuests, gifts, setGifts }: HomeProps) 
   return (
     <div>
       <Header
-        bride="Kristielly"
         groom="Daniel"
-        date="2025-06-07"
-        location="Chácara Timoneiro, Serra"
+        bride="Kristielly"
+        date="2025-05-24"
+        location="Rua Presidente Tancredo Almeida Neves, 1 - Vista da Penha, Vila Velha"
         onAdminClick={handleAdminAccess}
         isPasswordVisible={isPasswordVisible}
         password={password}

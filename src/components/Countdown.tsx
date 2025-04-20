@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 interface TimeLeft {
   days: number;
@@ -24,15 +24,16 @@ const calculateTimeLeft = (targetDate: Date): TimeLeft => {
 };
 
 export default function Countdown() {
-  const targetDate = new Date('2025-06-07T00:00:00-03:00');
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(calculateTimeLeft(targetDate));
+  const targetDate = useMemo(() => new Date('2025-05-24T00:00:00-03:00'), []);
+
+  const [timeLeft, setTimeLeft] = useState<TimeLeft>(() => calculateTimeLeft(targetDate));
 
   useEffect(() => {
     const timer = setInterval(() => {
       setTimeLeft(calculateTimeLeft(targetDate));
     }, 1000);
     return () => clearInterval(timer);
-  }, [targetDate]);
+  }, []); // ✅ Agora sem targetDate na dependência
 
   return (
     <div className="mt-6 text-center">
@@ -57,7 +58,7 @@ export default function Countdown() {
         </div>
       </div>
 
-      <p className="text-sm mt-2 text-[#9CB983]">para o grande dia!</p>
+      <p className="text-sm mt-2 text-[#9CB983]">para o nosso chá de panela!</p>
     </div>
   );
 }

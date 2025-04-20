@@ -7,4 +7,5 @@ export interface Gift {
   name: string;
   taken: boolean;
   chosenBy?: string;
+  allowMultiple?: boolean;
 }

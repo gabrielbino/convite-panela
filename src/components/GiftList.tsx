@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Gift, Guest } from '../types';
 import { saveGuest } from '../services/firebaseGuestsService.ts';
+import { db } from '../services/firebaseService';
 
 interface GiftListProps {
   guest: Guest | null;
@@ -24,7 +25,9 @@ export default function GiftList({ guest, gifts, setGifts, isAdmin }: GiftListPr
 
     const updatedGifts = gifts.map(gift =>
       gift.id === selectedGiftId
-        ? { ...gift, taken: true, chosenBy: userName }
+        ? gift.allowMultiple
+          ? gift // não marca como taken
+          : { ...gift, taken: true, chosenBy: userName }
         : gift
     );
 
@@ -51,7 +54,7 @@ export default function GiftList({ guest, gifts, setGifts, isAdmin }: GiftListPr
           >
             <div className="flex justify-between items-center">
               <span className="text-left font-medium text-[#354B25]">{gift.name}</span>
-              {gift.taken ? (
+              {gift.taken && !gift.allowMultiple ?   (
                 <span className="text-[#6CBD46] font-bold">
                   {isAdmin && gift.chosenBy ? `Escolhido por ${gift.chosenBy}` : 'Indisponível'}
                 </span>

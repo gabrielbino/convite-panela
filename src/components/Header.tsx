@@ -24,7 +24,10 @@ export default function Header({
   const [showInput, setShowInput] = useState(false);
 
   return (
-    <header className="bg-[#354B25] text-white py-6 px-4 rounded-b-xl relative">
+    <header
+      className="text-white py-6 px-4 rounded-b-xl relative bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: 'url(/fundo-cha.jpeg)' }}
+    >
       <div className="absolute right-4 top-4">
         {!showInput ? (
           <button
@@ -44,7 +47,7 @@ export default function Header({
             />
             <button
               onClick={onAdminClick}
-              className="bg-[#426221] hover:bg-[#6CBD46] text-white text-sm px-3 py-1 rounded shadow transition"
+              className="bg-[#5B8C3C] hover:bg-[#6CBD46] text-white text-sm px-3 py-1 rounded shadow transition"
             >
               Entrar
             </button>
@@ -53,11 +56,15 @@ export default function Header({
       </div>
 
       <div className="text-center mt-6">
-        <h1 className="text-3xl font-bold">
-          {bride} <span className="text-[#6CBD46]">&</span> {groom}
+        <h2 className="text-3xl font-bold drop-shadow-sm text-[#2C3E1F]"> 
+          Chá de Panela
+        </h2>
+        <h1 className="text-3xl font-bold italic drop-shadow-sm text-[#2C3E1F]"
+        style={{ fontFamily: 'Literaturnaya, serif' }}>
+          {groom} & {bride}
         </h1>
-        <p className="font-medium text-[#9CB983] mt-1">
-          {location} - {new Date(date + 'T00:00:00-03:00').toLocaleDateString('pt-BR')} às 16h
+        <p className="font-medium text-[#2C3E1F] mt-1">
+          {location} - {new Date(date + 'T00:00:00-03:00').toLocaleDateString('pt-BR')} às 17:30h
         </p>
         <Countdown />
       </div>

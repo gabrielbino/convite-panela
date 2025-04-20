@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { saveGuest } from '../services/firebaseGuestsService.ts';
+import { db } from '../services/firebaseService';
 
 interface PresenceFormProps {
   onSubmit: (name: string) => void;
