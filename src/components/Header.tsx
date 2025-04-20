@@ -56,14 +56,14 @@ export default function Header({
       </div>
 
       <div className="text-center mt-6">
-        <h2 className="text-3xl font-bold drop-shadow-sm text-[#2C3E1F]"> 
+        <h2 className="text-3xl font-bold drop-shadow-sm text-[#426221]"> 
           Chá de Panela
         </h2>
-        <h1 className="text-3xl font-bold italic drop-shadow-sm text-[#2C3E1F]"
+        <h1 className="text-3xl font-bold italic drop-shadow-sm text-[#354B25]"
         style={{ fontFamily: 'Literaturnaya, serif' }}>
           {groom} & {bride}
         </h1>
-        <p className="font-medium text-[#2C3E1F] mt-1">
+        <p className="font-medium text-[#6CBD46] mt-1">
           {location} - {new Date(date + 'T00:00:00-03:00').toLocaleDateString('pt-BR')} às 17:30h
         </p>
         <Countdown />

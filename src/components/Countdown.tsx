@@ -33,13 +33,13 @@ export default function Countdown() {
       setTimeLeft(calculateTimeLeft(targetDate));
     }, 1000);
     return () => clearInterval(timer);
-  }, []); // ✅ Agora sem targetDate na dependência
+  }, []);
 
   return (
     <div className="mt-6 text-center">
-      <p className="text-sm text-[#9CB983]">Faltam</p>
+      <p className="text-sm text-[#354B25]">Faltam</p>
 
-      <div className="flex justify-center gap-6 text-2xl font-bold text-[#6CBD46]">
+      <div className="flex justify-center gap-6 text-2xl font-bold text-[#426221]">
         <div className="flex flex-col items-center animate-pulse">
           <span>{timeLeft.days}</span>
           <span className="text-xs font-medium text-[#9CB983]">dias</span>
@@ -58,7 +58,7 @@ export default function Countdown() {
         </div>
       </div>
 
-      <p className="text-sm mt-2 text-[#9CB983]">para o nosso chá de panela!</p>
+      <p className="text-sm mt-2 text-[#354B25]">para o nosso chá de panela!</p>
     </div>
   );
 }

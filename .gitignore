@@ -1,3 +1,62 @@
-node_modules
+# === Node.js ===
+node_modules/
 .env
-/build
+.env.local
+.env.*.local
+.npm
+.npmrc
+
+# === Firebase ===
+.firebase/
+firestore-debug.log
+firestore.indexes.json
+firestore.rules
+*.firebase/
+firebase-debug.log
+firebase-debug.*.log
+firebase.json.backup
+firebase-export/
+storage-export/
+*.firebaserc.local
+
+# === Vercel (caso um dia integre) ===
+.vercel
+.vercel_build_output/
+
+# === Build Output ===
+build/
+dist/
+out/
+coverage/
+*.log
+*.lock
+
+# === Editor/IDE ===
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# === OS Files ===
+.DS_Store
+Thumbs.db
+
+# === GitHub Actions temp ===
+.github/workflows/*.log
+
+# === Others ===
+*.tgz
+.cache/
+.eslintcache
+*.tsbuildinfo
+
+# === Optional: ignore test snapshots or coverage ===
+__snapshots__/
+coverage/
+
+# === Ignore Firebase Hosting build if building locally ===
+public/
+
+# === Ignore compiled TS if not using tsconfig.build.json ===
+*.js
+*.js.map

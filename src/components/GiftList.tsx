@@ -68,7 +68,7 @@ export default function GiftList({ guest, gifts, setGifts, isAdmin }: GiftListPr
               )}
             </div>
 
-            {selectedGiftId === gift.id && !gift.taken && (
+            {selectedGiftId === gift.id && (!gift.taken || gift.allowMultiple) && (
               <div className="mt-4 border-t border-[#9CB983] pt-4 animate-fade-in">
                 {!guest && (
                   <input
