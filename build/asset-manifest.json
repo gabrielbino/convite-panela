@@ -1,14 +1,14 @@
 {
   "files": {
-    "main.css": "/static/css/main.99316003.css",
-    "main.js": "/static/js/main.4112f38b.js",
+    "main.css": "/static/css/main.e6006553.css",
+    "main.js": "/static/js/main.faa80052.js",
     "static/media/Literaturnaya-Regular.ttf": "/static/media/Literaturnaya-Regular.8d9f9b298b4cb3db1473.ttf",
     "index.html": "/index.html",
-    "main.99316003.css.map": "/static/css/main.99316003.css.map",
-    "main.4112f38b.js.map": "/static/js/main.4112f38b.js.map"
+    "main.e6006553.css.map": "/static/css/main.e6006553.css.map",
+    "main.faa80052.js.map": "/static/js/main.faa80052.js.map"
   },
   "entrypoints": [
-    "static/css/main.99316003.css",
-    "static/js/main.4112f38b.js"
+    "static/css/main.e6006553.css",
+    "static/js/main.faa80052.js"
   ]
 }
