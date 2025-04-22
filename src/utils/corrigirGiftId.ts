@@ -1,6 +1,6 @@
 import { collection, getDocs, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../services/firebaseService.ts';
-import { initialGifts } from '../data/giftList.ts'; // atualize o caminho conforme onde está seu array de presentes
+import { initialGifts } from '../data/giftList.ts';
 
 export async function corrigirGiftId(): Promise<string> {
   const guestsRef = collection(db, 'guests');

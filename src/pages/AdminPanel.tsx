@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { db } from '../services/firebaseService.ts';
-import { corrigirGiftId } from '../utils/corrigirGiftId.ts';
 
 interface GuestEntry {
   name: string;
@@ -11,13 +10,12 @@ interface GuestEntry {
 
 export default function AdminPanel() {
   const [guests, setGuests] = useState<GuestEntry[]>([]);
-  console.log(guests)
-  const [status, setStatus] = useState('');
+  // const [status, setStatus] = useState('');
 
-  const handleCorrigir = async () => {
-    const resultado = await corrigirGiftId();
-    setStatus(resultado);
-  };
+  // const handleCorrigir = async () => {
+  //   const resultado = await corrigirGiftId();
+  //   setStatus(resultado);
+  // };
 
   useEffect(() => {
     const q = query(collection(db, 'guests'), orderBy('timestamp', 'desc'));
@@ -65,14 +63,6 @@ export default function AdminPanel() {
           </ul>
         )}
       </section>
-      <button
-        onClick={handleCorrigir}
-        className="bg-[#426221] hover:bg-[#6CBD46] text-white px-4 py-2 rounded mt-4"
-      >
-        Corrigir giftId dos convidados
-      </button>
-
-      {status && <p className="text-sm text-green-600 mt-2">{status}</p>}
     </div>
   );
 }
