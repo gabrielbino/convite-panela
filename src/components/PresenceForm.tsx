@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { saveGuest } from '../services/firebaseGuestsService.ts';
-import { db } from '../services/firebaseService';
+import AlertBox from './AlertBox.tsx';
 
 interface PresenceFormProps {
   onSubmit: (name: string) => void;
@@ -8,24 +8,32 @@ interface PresenceFormProps {
 
 export default function PresenceForm({ onSubmit }: PresenceFormProps) {
   const [name, setName] = useState('');
+  const [alert, setAlert] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!name.trim()) {
-      alert('Por favor, preencha nome.');
+      setAlert({ message: 'Por favor, preencha o nome.', type: 'error' });
       return;
     }
-
-    await saveGuest(name, true); // apenas presença
-    onSubmit(name);
-    setName('');
-    alert('Presença confirmada com sucesso!');
+  
+    await saveGuest(name, true); // salva no banco
+  
+    setAlert({ message: 'Presença confirmada com sucesso!', type: 'success' });
+  
+    // Pequeno atraso para garantir render antes do reset
+    // setTimeout(() => {
+    //   onSubmit(name);
+    //   setName('');
+    // }, 300);
   };
+  
 
   return (
     <section className="mt-12 text-center">
       <h2 className="text-2xl font-semibold mb-4 text-[#354B25]">Confirme sua presença</h2>
+
       <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row justify-center items-center gap-4">
         <input
           type="text"
@@ -41,6 +49,8 @@ export default function PresenceForm({ onSubmit }: PresenceFormProps) {
           Confirmar
         </button>
       </form>
+      
+      {alert && <AlertBox message={alert.message} type={alert.type} />}
     </section>
   );
 }

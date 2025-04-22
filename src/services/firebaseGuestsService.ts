@@ -20,12 +20,29 @@ export async function checkDuplicateGuestByName(name: string): Promise<boolean> 
 export async function saveGuest(
   name: string,
   confirmed: boolean,
-  gift?: string
+  giftName?: string,
+  giftId?: number,
+  allowMultiple?: boolean
 ): Promise<void> {
   try {
     const normalizedId = normalizeName(name);
     const guestsRef = collection(db, 'guests');
 
+    // Se o presente permite múltiplos, sempre adiciona novo documento
+    if (allowMultiple) {
+      await addDoc(guestsRef, {
+        name,
+        normalizedName: `${normalizedId}-${Date.now()}`, // evita duplicação
+        confirmed,
+        gift: giftName || null,
+        giftId: giftId || null,
+        timestamp: new Date()
+      });
+      console.log("Convidado salvo com presente múltiplo.");
+      return;
+    }
+
+    // Presente único — checa se já existe
     const q = query(guestsRef, where('normalizedName', '==', normalizedId));
     const snapshot = await getDocs(q);
 
@@ -33,7 +50,8 @@ export async function saveGuest(
       const existingDoc = snapshot.docs[0];
       await updateDoc(doc(db, 'guests', existingDoc.id), {
         confirmed: true,
-        gift: gift ?? existingDoc.data().gift ?? null,
+        gift: giftName ?? existingDoc.data().gift ?? null,
+        giftId: giftId || null,
         timestamp: new Date()
       });
     } else {
@@ -41,7 +59,8 @@ export async function saveGuest(
         name,
         normalizedName: normalizedId,
         confirmed,
-        gift: gift || null,
+        gift: giftName || null,
+        giftId: giftId || null,
         timestamp: new Date()
       });
     }

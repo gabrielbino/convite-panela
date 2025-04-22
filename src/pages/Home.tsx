@@ -23,16 +23,20 @@ export default function Home({ guests, setGuests, gifts, setGifts }: HomeProps) 
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'guests'), (snapshot) => {
-      const updatedTaken = snapshot.docs
-        .map(doc => doc.data())
-        .map(data => data.gift)
-        .filter(gift => typeof gift === 'string');
+      const guestData = snapshot.docs.map(doc => doc.data());
   
-      const updated = gifts.map(gift => ({
-        ...gift,
-        taken: updatedTaken.includes(gift.name),
-        chosenBy: updatedTaken.includes(gift.name) ? gift.chosenBy : undefined,
-      }));
+      const updated = gifts.map(gift => {
+        if (gift.allowMultiple) {
+          return { ...gift, taken: false, chosenBy: undefined };
+        }
+  
+        const match = guestData.find(guest => guest.giftId === gift.id);
+        return {
+          ...gift,
+          taken: Boolean(match),
+          chosenBy: match?.name || undefined,
+        };
+      });
   
       setGifts(updated);
     });

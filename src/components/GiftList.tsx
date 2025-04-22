@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Gift, Guest } from '../types';
 import { saveGuest } from '../services/firebaseGuestsService.ts';
-import { db } from '../services/firebaseService';
+import AlertBox from './AlertBox.tsx';
 
 interface GiftListProps {
   guest: Guest | null;
@@ -13,39 +13,48 @@ interface GiftListProps {
 export default function GiftList({ guest, gifts, setGifts, isAdmin }: GiftListProps) {
   const [selectedGiftId, setSelectedGiftId] = useState<number | null>(null);
   const [name, setName] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [alert, setAlert] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
 
   const handleGiftConfirm = async () => {
     const userName = guest?.name || name;
-
+  
     if (!userName || selectedGiftId === null) {
-      alert('Por favor, preencha nome e selecione um presente.');
+      setAlert({ message: 'Por favor, preencha o nome antes de confirmar o presente.', type: 'error' });
       return;
     }
-
-    const updatedGifts = gifts.map(gift =>
-      gift.id === selectedGiftId
-        ? gift.allowMultiple
-          ? gift // não marca como taken
-          : { ...gift, taken: true, chosenBy: userName }
-        : gift
-    );
-
-    setGifts(updatedGifts);
-
-    const selectedGift = updatedGifts.find(g => g.id === selectedGiftId);
+  
+    const selectedGift = gifts.find(g => g.id === selectedGiftId);
+  
     if (selectedGift) {
-      await saveGuest(userName, false, selectedGift.name);
-      setSuccessMessage("Presente registrado com sucesso!");
+      await saveGuest(userName, false, selectedGift.name, selectedGift.id, selectedGift.allowMultiple);
+  
+      // Mostra mensagem de sucesso imediatamente
+      setShowSuccess(true);
+      setAlert(null); // limpa mensagens de erro, se houver
+  
+      // Aguarda 1 segundo antes de marcar como indisponível
+      setTimeout(() => {
+        const updatedGifts = gifts.map(gift =>
+          gift.id === selectedGiftId
+            ? gift.allowMultiple
+              ? gift // presente múltiplo: continua disponível
+              : { ...gift, taken: true, chosenBy: userName }
+            : gift
+        );
+  
+        setSelectedGiftId(null);
+        setGifts(updatedGifts);
+        setName('');
+        setShowSuccess(false); // esconde alerta depois
+      }, 3000);
     }
-
-    setSelectedGiftId(null);
-    setName('');
   };
 
   return (
     <section className="mt-12 text-center">
       <h2 className="text-2xl font-semibold mb-4 text-[#354B25]">Lista de Presentes</h2>
+
       <ul className="space-y-4">
         {gifts.map(gift => (
           <li
@@ -54,7 +63,7 @@ export default function GiftList({ guest, gifts, setGifts, isAdmin }: GiftListPr
           >
             <div className="flex justify-between items-center">
               <span className="text-left font-medium text-[#354B25]">{gift.name}</span>
-              {gift.taken && !gift.allowMultiple ?   (
+              {gift.taken && !gift.allowMultiple ? (
                 <span className="text-[#6CBD46] font-bold">
                   {isAdmin && gift.chosenBy ? `Escolhido por ${gift.chosenBy}` : 'Indisponível'}
                 </span>
@@ -68,7 +77,7 @@ export default function GiftList({ guest, gifts, setGifts, isAdmin }: GiftListPr
               )}
             </div>
 
-            {selectedGiftId === gift.id && (!gift.taken || gift.allowMultiple) && (
+            {selectedGiftId === gift.id && (
               <div className="mt-4 border-t border-[#9CB983] pt-4 animate-fade-in">
                 {!guest && (
                   <input
@@ -86,17 +95,15 @@ export default function GiftList({ guest, gifts, setGifts, isAdmin }: GiftListPr
                 >
                   Confirmar Presente
                 </button>
+
+                {showSuccess && <AlertBox message="Presente registrado com sucesso!" type="success" />}
+                {alert && <AlertBox message={alert.message} type={alert.type} />}
               </div>
             )}
           </li>
         ))}
       </ul>
 
-      {successMessage && (
-        <div className="mt-6 p-4 bg-green-100 border border-green-300 rounded text-green-700">
-          {successMessage}
-        </div>
-      )}
     </section>
   );
 }
