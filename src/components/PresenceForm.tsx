@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { saveGuest } from '../services/firebaseGuestsService.ts';
-import AlertBox from './AlertBox.tsx';
+import AlertBox from './AlertBox.tsx'; // <<< Importa o AlertBox aqui
 
 interface PresenceFormProps {
   onSubmit: (name: string) => void;
@@ -8,27 +8,31 @@ interface PresenceFormProps {
 
 export default function PresenceForm({ onSubmit }: PresenceFormProps) {
   const [name, setName] = useState('');
-  const [alert, setAlert] = useState<{ message: string; type: 'success' | 'error' | 'warning' } | null>(null);
+  const [alert, setAlert] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!name.trim()) {
       setAlert({ message: 'Por favor, preencha o nome.', type: 'error' });
       return;
     }
-  
-    await saveGuest(name, true); // salva no banco
-  
-    setAlert({ message: 'Presença confirmada com sucesso!', type: 'success' });
-  
-    // Pequeno atraso para garantir render antes do reset
-    // setTimeout(() => {
-    //   onSubmit(name);
-    //   setName('');
-    // }, 300);
+
+    try {
+      await saveGuest(name, true); // apenas presença
+      onSubmit(name);
+      setAlert({ message: 'Presença confirmada com sucesso!', type: 'success' });
+      setName('');
+
+      setTimeout(() => {
+        setAlert(null); // limpa o alerta depois de 3 segundos
+      }, 3000);
+      
+    } catch (error) {
+      console.error(error);
+      setAlert({ message: 'Erro ao confirmar presença.', type: 'error' });
+    }
   };
-  
 
   return (
     <section className="mt-12 text-center">
@@ -49,8 +53,12 @@ export default function PresenceForm({ onSubmit }: PresenceFormProps) {
           Confirmar
         </button>
       </form>
-      
-      {alert && <AlertBox message={alert.message} type={alert.type} />}
+
+      {alert && (
+        <div className="mt-4">
+          <AlertBox message={alert.message} type={alert.type} />
+        </div>
+      )}
     </section>
   );
 }

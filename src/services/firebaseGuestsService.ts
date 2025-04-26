@@ -1,4 +1,4 @@
-import { db } from './firebaseService';
+import { db } from './firebaseService.ts';
 import { collection, query, where, getDocs, addDoc, updateDoc, doc } from 'firebase/firestore';
 import { normalizeName } from '../utils/utils.ts';
 
