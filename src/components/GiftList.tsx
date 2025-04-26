@@ -27,29 +27,29 @@ export default function GiftList({ guest, gifts, setGifts, isAdmin }: GiftListPr
     const selectedGift = gifts.find(g => g.id === selectedGiftId);
   
     if (selectedGift) {
-      await saveGuest(userName, false, selectedGift.name, selectedGift.id, selectedGift.allowMultiple);
+      try {
+        await saveGuest(userName, false, selectedGift.name, selectedGift.id, selectedGift.allowMultiple);
+        setAlert({ message: 'Presente registrado com sucesso!', type: 'success' });
   
-      // Mostra mensagem de sucesso imediatamente
-      setShowSuccess(true);
-      setAlert(null); // limpa mensagens de erro, se houver
+        setTimeout(() => {
+          const updatedGifts = gifts.map(gift =>
+            gift.id === selectedGiftId
+              ? gift.allowMultiple
+                ? gift
+                : { ...gift, taken: true, chosenBy: userName }
+              : gift
+          );
   
-      // Aguarda 1 segundo antes de marcar como indisponível
-      setTimeout(() => {
-        const updatedGifts = gifts.map(gift =>
-          gift.id === selectedGiftId
-            ? gift.allowMultiple
-              ? gift // presente múltiplo: continua disponível
-              : { ...gift, taken: true, chosenBy: userName }
-            : gift
-        );
-  
-        setSelectedGiftId(null);
-        setGifts(updatedGifts);
-        setName('');
-        setShowSuccess(false); // esconde alerta depois
-      }, 3000);
+          setGifts(updatedGifts);
+          setSelectedGiftId(null);
+          setName('');
+        }, 1500);
+      } catch (error: any) {
+        setAlert({ message: error.message || 'Erro ao confirmar o presente.', type: 'error' });
+      }
     }
   };
+  
 
   return (
     <section className="mt-12 text-center">

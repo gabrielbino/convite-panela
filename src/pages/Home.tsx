@@ -5,7 +5,7 @@ import PresenceForm from '../components/PresenceForm.tsx';
 import GiftList from '../components/GiftList.tsx';
 import PixSection from '../components/PixSection.tsx';
 import { Guest, Gift } from '../types';
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../services/firebaseService.ts';
 
 interface HomeProps {
@@ -22,27 +22,28 @@ export default function Home({ guests, setGuests, gifts, setGifts }: HomeProps) 
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'guests'), (snapshot) => {
-      const guestData = snapshot.docs.map(doc => doc.data());
+    const fetchGifts = async () => {
+      const snapshot = await getDocs(collection(db, 'guests'));
   
-      const updated = gifts.map(gift => {
-        if (gift.allowMultiple) {
-          return { ...gift, taken: false, chosenBy: undefined };
-        }
+      const updatedTaken = snapshot.docs
+        .map(doc => doc.data())
+        .filter(data => data.giftId !== undefined && data.giftId !== null) // Agora usamos o giftId!
+        .map(data => data.giftId);
   
-        const match = guestData.find(guest => guest.giftId === gift.id);
-        return {
-          ...gift,
-          taken: Boolean(match),
-          chosenBy: match?.name || undefined,
-        };
-      });
+      const updated = gifts.map(gift => ({
+        ...gift,
+        taken: updatedTaken.includes(gift.id),
+        chosenBy: updatedTaken.includes(gift.id)
+          ? snapshot.docs.find(doc => doc.data().giftId === gift.id)?.data().name
+          : undefined,
+      }));
   
       setGifts(updated);
-    });
+    };
   
-    return () => unsubscribe();
+    fetchGifts();
   }, [gifts, setGifts]);
+  
 
   const handleAdminAccess = () => {
     if (password === process.env.REACT_APP_ADMIN_PASSWORD) {
